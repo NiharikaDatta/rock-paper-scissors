@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      Rock Paper Scissors
+    </title>
+    <style>
+      button
+      {
+        border: none;
+        background-color: white;
+        color: black;
+      }
+      button:hover
+      {
+        cursor: pointer;
+        filter: brightness(0.8);
+      }
+      button:active
+      {
+        cursor: grabbing;
+        filter: brightness(0.6);
+      }
+      p 
+      {
+        color: white;
+      }
+      .icon
+      {
+        background-color: transparent;
+        border: none;
+        height: 65px;
+      }
+      .but
+      {
+        background-color: black;
+        border: 4px solid white;
+        margin-left: 20px;
+        margin-right: 20px;
+        padding: 40px;
+        border-radius: 100%;
+      }
+      .Result
+      {
+        font-size: 25px;
+        font-weight: bold;
+        margin-top: 40px;
+        margin-bottom: 40px;
+      }
+      .Moves
+      {
+        margin-bottom: 50px;
+      }
+      .Score
+      {
+        margin-bottom: 50px;
+      }
+      .reset
+      {
+        font-size: 18px;
+        border: none;
+        padding: 10px 8px;
+        border-radius: 20px;
+      }
+    </style>
+  </head>
+  <body style="background-color: black; font-family: Arial">
+    <p style="color: white; font-weight: bold; font-size: 35px;">Rock Paper Scissors</p>
+    <button class="but" onclick="play('Rock')"><img src="images/rock-emoji.png" class="icon"></button>
+    <button class="but" onclick="play('Paper')"><img src="images/paper-emoji.png" class="icon"></button>
+    <button class="but" onclick="play('Scissors')"><img src="images/scissors-emoji.png" class="icon"></button>
+    <p class="Result">Play!</p>
+    <p class="Moves">Pick a Move!</p>
+    <p class="Score"></p>
+    <button onclick="ResetScore()" class="reset">Reset Score</button>
+    <script>
+      let score = JSON.parse(localStorage.getItem('score')); //bc we need obj
+      scoring();
+      function play(humanMove)
+      {
+        const randomnum=Math.random();
+        let compMove = "";
+        if(randomnum>=0 && randomnum<=1/3)
+        compMove="Rock";
+        else if(randomnum>1/3 && randomnum<=2/3)
+        compMove="Paper"
+        else
+        compMove="Scissors";
+        let result=""; //let when value will change. like let mut in rust.
+        const rules = { //const when we know value won't change so we do this to be safe. like normal let in rust
+          Rock: "Scissors",
+          Paper: "Rock",
+          Scissors: "Paper"
+        };
+        if(humanMove===compMove)
+        {
+          result="Tie";
+          score.Tie+=1;
+        }
+        else if(rules[humanMove]===compMove)
+        {
+          result="You win";
+          score.Wins+=1;
+        }
+        else
+        {
+          result="Computer wins";
+          score.Loss+=1;
+        }
+        resulting(result);
+        moves(humanMove, compMove);
+        scoring();
+        localStorage.setItem('score', JSON.stringify(score)); //only stores strings
+      }
+      function ResetScore()
+      {
+        score.Wins=0;
+        score.Loss=0;
+        score.Tie=0;
+        document.querySelector('.Result').innerHTML = "Play!";
+        document.querySelector('.Moves').innerHTML = "Pick a Move!";
+        scoring();
+      }
+      function scoring()
+      {
+        document.querySelector('.Score').innerHTML = `Ties: ${score.Tie} Loss: ${score.Loss} Win: ${score.Wins}`;
+      }
+      function moves(human, computer)
+      {
+        document.querySelector('.Moves').innerHTML = `You <img src="images/${human}-emoji.png" class="icon">  <img src="images/${computer}-emoji.png" class="icon">  Computer`;
+      }
+      function resulting(result)
+      {
+        document.querySelector('.Result').innerHTML = result;
+      }
+    </script>
+  </body>
+</html>
